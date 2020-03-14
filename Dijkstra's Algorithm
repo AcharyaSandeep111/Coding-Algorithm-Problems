@@ -1,0 +1,44 @@
+// A different sort of implementation for Dijkstra's algorithm
+// Whenever the distance of a vertex decreases, it is pushed on to the min prioority queue
+// So a single vertex could be pushed multiple times , (but along with different distances)
+// When a vertex is popped, we are sure that the corresponding distance is the smallest out of all the duplicates of that vertex (because of the minimum property of priority queue)
+// And once a vertex is popped and marked visited, its duplicates in priority queue are ignored
+
+
+
+
+#include <iostream>
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main()
+{
+    
+    vector<vector<pair<int,int>>> adj = {{{1,7},{3,4},{4,2}},{{0,7},{4,6},{2,3}},{{1,3},{4,1},{3,5}},{{0,4},{4,3},{2,5}},{{0,2},{1,6},{2,1},{3,4}}};
+    vector<bool> visited(5,false);
+    auto comp = [](pair<int,int> a, pair<int,int> b) ->bool { return a.second > b.second; };
+    priority_queue<pair<int,int>,vector<pair<int,int>>,decltype(comp)> pq(comp);
+    vector<int> dist(5,1000);
+    dist[0] = 0;
+    pq.push({0,0});
+    while(!pq.empty()) {
+        auto item = pq.top();
+        pq.pop();
+        int v = item.first;
+        int d = item.second;
+        if(visited[v]) continue;
+        visited[v] = true;
+        for(auto p: adj[v]) {
+            if(!visited[p.first]) {
+                if(d + p.second < dist[p.first]) {
+                    dist[p.first] = d + p.second;
+                    pq.push({p.first,dist[p.first]});
+                }
+            }
+        }
+    }
+    for(int i=0;i<dist.size();i++) 
+        cout<<i<<" : "<<dist[i]<<endl;
+    return 0;
+}
