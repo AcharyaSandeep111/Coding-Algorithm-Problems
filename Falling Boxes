@@ -1,0 +1,38 @@
+
+#grid is 2d array. it contains either a box ('#'), obstacle ('*') or empty('.')
+#strength[i][j] store the strength of obstacle at grid[i][j]
+#if there are more boxes on top of an obstacle than its strength, obstacle will collapse and boxes will fall down. Assume the grid is surrounded by obstacles of infinite strength
+#compute the final state of the grid
+
+def func(grid, strength) :
+    
+    #remove all the breakable obstacles
+    for j in range(len(grid[0])) :
+        boxes = 0
+        for x in range(len(grid)) :
+            if grid[i][j] == '#': 
+                #box
+                boxes+=1
+            else if grid[i][j] == '*' : 
+                #obstacle
+                if strength[i][j] < boxes :
+                    grid[i][j] = '.' 
+                else :
+                    boxes = 0
+    
+    
+    #shift the boxes down
+    for j in range(len(grid[0])) :
+        f = len(grid) - 1
+        s = len(grid) - 1
+        while(f>=0) :
+            if grid[f][j] == '*' :
+                s = f + 1
+            else if grid[f][j] == '#' :
+                tmp = grid[f][j]
+                grid[f][j] = grid[s][j]
+                grid[s][j] = tmp
+                s+=1
+            f+=1
+            
+    return grid

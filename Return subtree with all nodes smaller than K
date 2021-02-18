@@ -1,0 +1,22 @@
+//A bst is given. Return a subtree with all nodes smaller or equal to V
+
+
+class Solution {
+public:
+    vector<TreeNode*> splitBST(TreeNode* root, int V) {
+        return {getSmall(root, V), NULL};
+    }
+    
+    //returns a subtree with all nodes smaller or equal to  V
+    TreeNode* getSmall(TreeNode* root, int V) {
+        if(root == NULL) return NULL;
+        if(root->val <= V) {
+            root->right = getSmall(root->right, V);
+            return root;
+        }
+        else {
+            return getSmall(root->left, V);
+        }
+        return NULL;
+    }
+};

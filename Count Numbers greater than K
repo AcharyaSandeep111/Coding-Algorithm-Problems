@@ -1,0 +1,66 @@
+//Given an array, where all numbers are first decreasing and then increasing
+//find the # of elements which are greater than K
+//there are no duplicates
+
+
+class Solution {
+public:
+
+int find_pivot(vector<int>& A) {
+    //returns pivot, where pivot is the minimum element in array
+    int hi = A.size()-1;
+    int lo = 0;
+    int pivot = -1;
+    while(hi >= lo) {
+        int mid = (hi+ lo)/2;
+        //need to handle this case ---> if mid == 0, then we are considering 2 elements at most, ie elements at index 0 and index 1,  and we have not seen any potential pivot till now (because if we had seen a potential pivot, we would have increased lo , after that mid would never be 0), so just return the index of whichever is smaller
+        if(mid == 0) return A[mid] < A[mid+1] ? mid : mid + 1;
+        
+        if(A[mid - 1] > A[mid]) { //mid is a potential pivot
+            pivot = max(pivot,mid);
+            lo = mid + 1;
+        }
+        else {
+            //mid is not a pivot
+            hi = mid - 1;
+        }
+    }
+    return pivot;
+}
+
+int bsearch(vector<int>& A, int hi, int lo, int k) {
+    // do binary search from left to right
+    //return number of elements greater than k
+    int count = 0;
+    if(A[hi] > A[lo]) {
+        //array is sorted in ascending order
+        while(hi >= lo) {
+            int mid = (hi + lo) / 2;
+            if(A[mid] > k) {
+                count += (hi - mid + 1);
+                hi = mid - 1;
+            }
+            else lo = mid + 1;
+        }
+    }
+    else {
+        //array is sorted in descending order
+        while(hi >= lo) {
+            int mid = (hi + lo) / 2;
+            if(A[mid] > k) {
+                count += mid - lo + 1;
+                lo = mid + 1;
+            }
+            else hi = mid - 1;
+        }
+        
+    }
+    return count;
+}
+
+int CountNumbersLessThanK(vector<int>& A, int k) {
+        int pv = find_pivot(A);
+        return bsearch(A,0,pv,k) + bsearch(A,pv+1,A.size()-1,k);
+}
+
+};
